@@ -12,6 +12,7 @@ class HashTable:
         # Hash table is initialized with empty buckets, each bucket is a list
         self.cap = initial_cap
         self.table = []
+        # O(n) time complexity due to the for loop
         for i in range(self.cap):
             self.table.append([])
 
@@ -25,6 +26,7 @@ class HashTable:
         bucket_list = self.table[bucket]
 
         # If the package ID is already in the bucket list, update the package details
+        # O(n) time complexity due to the for loop
         for kv in bucket_list:
             if kv == key:
                 kv[1] = value
@@ -47,6 +49,7 @@ class HashTable:
         bucket_list = self.table[bucket]
 
         # Search the bucket_list for the package ID, return the details associated with the ID
+        # O(n) time complexity due to the for loop
         for kv in bucket_list:
             if kv[0] == key:
                 return kv[1]
@@ -60,6 +63,7 @@ class HashTable:
         bucket_list = self.table[bucket]
 
         # Remove the kv pair from the bucket if it is present
+        # O(n) time complexity due to the for loop
         for kv in bucket_list:
             if kv[0] == key:
                 bucket_list.remove([kv[0], kv[1]])
@@ -73,6 +77,8 @@ class HashTable:
         self.table = [[] for i in range(self.cap)]
 
         # Insert the data from the original table into the new, resized table
+        # # O(n^2) time complexity due to the nested for loop
         for bucket in original_table:
             for k, v in bucket:
                 self.insert(k, v)
+
