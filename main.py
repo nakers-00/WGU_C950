@@ -2,13 +2,29 @@
 import Functions
 # from Hashtable import HashTable
 from Package import Package
+from Truck import Truck
 
 package_data = Functions.read_package_csv('package.csv')
 address_data = Functions.read_address_csv('addresses.csv')
 distance_data = Functions.read_distance_csv('distances.csv')
 
+# NOTE: These times you timedelta so they can be easily manipulated and analyzed
+truck1_depart_time = Functions.time_converter('8:00')
+truck1 = Truck(16, 18, [15, 19, 14, 13, 16, 20, 17, 1, 29, 30, 31, 34, 37, 40, 24, 26],
+               0.0, '4001 South 700 East', truck1_depart_time)
+
+truck2_depart_time = Functions.time_converter('9:05')
+truck2 = Truck(16, 18, [3, 6, 18, 25, 28, 32, 36, 38, 2, 4, 5, 7, 8, 21, 22, 23],
+               0.0, '4001 South 700 East', truck2_depart_time)
+
+truck3_depart_time = Functions.time_converter('10:20')
+# Package 9 address updated at 10:20 am
+truck3 = Truck(16, 18, [9, 10, 11, 12, 27, 33, 35, 39], 0.0,
+               '4001 South 700 East', truck3_depart_time)
+
 
 # package_hash_table = HashTable()
+
 
 # This method takes a hash table and package information as input and loops through the package information array to
 # create package objects and insert them into the hash table

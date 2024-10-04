@@ -24,11 +24,12 @@ read_distance_csv = read_csv
 
 # This method will be used in main.py to take a user input time and convert it into a form that can be compared more
 # easily
-def time_converter(user_time):
-    (usr_h, usr_m) = user_time.split(':')
+# The input must be in 24-hour clock
+def time_converter(time):
+    (h, m) = time.split(':')
 
-    time_to_check = timedelta(hours=int(usr_h), minutes=int(usr_m))
-    return time_to_check
+    converted_time = timedelta(hours=int(h), minutes=int(m))
+    return converted_time
 
 # Basic idea for how to make package objects, need to use a loop and add them to the hash table in real implementation
 
