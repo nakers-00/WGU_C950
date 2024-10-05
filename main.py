@@ -112,15 +112,11 @@ def deliver_packages(truck, hash_table, distance_info):
         package.depart_time = truck.departure_time
         package.delivery_time = truck.current_time
 
-        # print(f'Package {package_delivered_id} departed at {package.depart_time}'
- #             f' and was delivered at {truck.current_time}!')
-
     distance_to_hub = distance_between(truck.current_address, '4001 South 700 East', distance_info)
     truck.distance_travelled += distance_to_hub
+    truck.distance_travelled = round(truck.distance_travelled, 0)
     truck.current_address = '4001 South 700 East'
     truck.current_time += timedelta(hours=distance_to_hub / truck.speed)
-    #print(
-#        f'The truck travelled: {round(truck.distance_travelled, 0)} miles and arrived back at the hub at: {truck.current_time}')
 
 
 load_package_data(package_hash_table, package_data)
@@ -132,8 +128,15 @@ deliver_packages(truck2, package_hash_table, distance_data)
 # leave until that package address is updated.
 deliver_packages(truck3, package_hash_table, distance_data)
 
+total_mileage = truck1.distance_travelled + truck2.distance_travelled + truck3.distance_travelled
+print(total_mileage)
 
-# NOTE: For the interface, if they enter a time before 10:20, return the old package 9 address, if the enter 10:20 or
+truck1_inv = [15, 19, 14, 13, 16, 20, 17, 1, 29, 30, 31, 34, 37, 40, 24, 26]
+truck2_inv = [3, 6, 18, 25, 28, 32, 36, 38, 2, 4, 5, 7, 8, 21, 22, 23]
+truck3_inv = [9, 10, 11, 12, 27, 33, 35, 39]
+
+
+# NOTE: For the interface, if they enter a time before 10:20, return the old package 9 address, if they enter 10:20 or
 # later, return the updated address
 
 # User command line interface
@@ -148,7 +151,8 @@ class Main:
 
     # If statement to check if the user requested all packages or a single package
     if user_input in ('All', 'ALL', 'all'):
-        for i in range(1, 41):
+        print("\nTruck 1")
+        for i in truck1_inv:
             package = package_hash_table.lookup(i)
             package.package_status(user_time)
 
@@ -159,10 +163,43 @@ class Main:
                 package.zip = '84103'
 
             # Print package info
-            print(f"ID: {package.id} | Delivery Address: {package.address} | City: {package.city} | Zip Code: "
-                  f"{package.zip} | Deadline: {package.deadline} | Departure Time: {package.depart_time} | "
-                  f"Delivery Time: {package.delivery_time} | Weight(kg): {package.weight} | Package Status: "
+            print(f"ID: {package.id} | Deadline: {package.deadline} | Departure Time: {package.depart_time} | "
+                  f"Delivery Time: {package.delivery_time} | Package Status: "
                   f"{package.status} | Special Notes: {package.special_notes}")
+
+        print("\nTruck 2:")
+        for i in truck2_inv:
+            package = package_hash_table.lookup(i)
+            package.package_status(user_time)
+
+            # If user_time is before 10:20 am then set the address and zip code to the address and zip before it was
+            # updated at 10:20 am
+            if user_time < timedelta(hours=10, minutes=20) and package.id == 9:
+                package.address = '300 State St'
+                package.zip = '84103'
+
+            # Print package info
+            print(f"ID: {package.id} | Deadline: {package.deadline} | Departure Time: {package.depart_time} | "
+                  f"Delivery Time: {package.delivery_time} | Package Status: "
+                  f"{package.status} | Special Notes: {package.special_notes}")
+
+        print("\nTruck 3:")
+        for i in truck3_inv:
+            package = package_hash_table.lookup(i)
+            package.package_status(user_time)
+
+            # If user_time is before 10:20 am then set the address and zip code to the address and zip before it was
+            # updated at 10:20 am
+            if user_time < timedelta(hours=10, minutes=20) and package.id == 9:
+                package.address = '300 State St'
+                package.zip = '84103'
+
+            # Print package info
+            print(f"ID: {package.id} | Deadline: {package.deadline} | Departure Time: {package.depart_time} | "
+                  f"Delivery Time: {package.delivery_time} | Package Status: "
+                  f"{package.status} | Special Notes: {package.special_notes}")
+
+        print(f"\nTotal Mileage: {total_mileage}")
 
     elif 1 <= int(user_input) <= 40:
         package = package_hash_table.lookup(int(user_input))
@@ -179,6 +216,5 @@ class Main:
               f"{package.zip} | Deadline: {package.deadline} | Departure Time: {package.depart_time} | "
               f"Delivery Time: {package.delivery_time} | Weight(kg): {package.weight} | Package Status: "
               f"{package.status} | Special Notes: {package.special_notes}")
-
 
 # NOTE: When updating package departure and delivery times, remember to store them with timedelta*
