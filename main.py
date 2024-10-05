@@ -63,7 +63,8 @@ def distance_between(address1, address2, distance_info):
     # The indices from address_data correspond to the indices in distance_data, so simply plug in those indices to
     # find the distance between the two addresses
     distance = distance_info[address1_index][address2_index]
-    return float(distance)
+    distance = float(distance)
+    return distance
 
 
 # This method takes in an address and compares it with the delivery address of each package in the list of
@@ -111,14 +112,15 @@ def deliver_packages(truck, hash_table, distance_info):
         package.depart_time = truck.departure_time
         package.delivery_time = truck.current_time
 
-        print(f'Package {package_delivered_id} departed at {package.depart_time}'
-              f' and was delivered at {truck.current_time}!')
+        # print(f'Package {package_delivered_id} departed at {package.depart_time}'
+ #             f' and was delivered at {truck.current_time}!')
 
     distance_to_hub = distance_between(truck.current_address, '4001 South 700 East', distance_info)
     truck.distance_travelled += distance_to_hub
     truck.current_address = '4001 South 700 East'
     truck.current_time += timedelta(hours=distance_to_hub / truck.speed)
-    print(f'The truck travelled: {truck.distance_travelled} miles and arrived back at the hub at: {truck.current_time}')
+    #print(
+#        f'The truck travelled: {round(truck.distance_travelled, 0)} miles and arrived back at the hub at: {truck.current_time}')
 
 
 load_package_data(package_hash_table, package_data)
@@ -130,18 +132,53 @@ deliver_packages(truck2, package_hash_table, distance_data)
 # leave until that package address is updated.
 deliver_packages(truck3, package_hash_table, distance_data)
 
+
 # NOTE: For the interface, if they enter a time before 10:20, return the old package 9 address, if the enter 10:20 or
 # later, return the updated address
 
+# User command line interface
+class Main:
+    # Gets input from user
+    user_time = input("Please enter a time (24-hour clock) at which to check package information - (Ex. 22:00): ")
+    user_input = input("If you would like to view a single package, please enter the package ID number. Type 'All' to "
+                       "view all packages: ")
+
+    # Converts user_time into a timedelta object
+    user_time = Functions.time_converter(user_time)
+
+    # If statement to check if the user requested all packages or a single package
+    if user_input in ('All', 'ALL', 'all'):
+        for i in range(1, 41):
+            package = package_hash_table.lookup(i)
+            package.package_status(user_time)
+
+            # If user_time is before 10:20 am then set the address and zip code to the address and zip before it was
+            # updated at 10:20 am
+            if user_time < timedelta(hours=10, minutes=20) and package.id == 9:
+                package.address = '300 State St'
+                package.zip = '84103'
+
+            # Print package info
+            print(f"ID: {package.id} | Delivery Address: {package.address} | City: {package.city} | Zip Code: "
+                  f"{package.zip} | Deadline: {package.deadline} | Departure Time: {package.depart_time} | "
+                  f"Delivery Time: {package.delivery_time} | Weight(kg): {package.weight} | Package Status: "
+                  f"{package.status} | Special Notes: {package.special_notes}")
+
+    elif 1 <= int(user_input) <= 40:
+        package = package_hash_table.lookup(int(user_input))
+        package.package_status(user_time)
+
+        # If user_time is before 10:20 am then set the address and zip code to the address and zip before it was
+        # updated at 10:20 am
+        if user_time < timedelta(hours=10, minutes=20) and package.id == 9:
+            package.address = '300 State St'
+            package.zip = '84103'
+
+        # Print package info
+        print(f"ID: {package.id} | Delivery Address: {package.address} | City: {package.city} | Zip Code: "
+              f"{package.zip} | Deadline: {package.deadline} | Departure Time: {package.depart_time} | "
+              f"Delivery Time: {package.delivery_time} | Weight(kg): {package.weight} | Package Status: "
+              f"{package.status} | Special Notes: {package.special_notes}")
+
+
 # NOTE: When updating package departure and delivery times, remember to store them with timedelta*
-
-
-# * This is a check for if the distance array is correct*
-# for i in range(len(distance_data) - 1):
-#     for j in range(len(distance_data) - 1):
-#         if distance_data[i][j] == distance_data[j][i]:
-#             print('good')
-#             continue
-#         else:
-#             print('bad')
-#             break
