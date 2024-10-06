@@ -108,6 +108,7 @@ def deliver_packages(truck, hash_table, distance_info):
         truck.current_address = delivery_address
         # Increment the current time of the truck
         truck.current_time += timedelta(hours=distance / truck.speed)
+        truck.time_distance_list.append([truck.current_time, truck.distance_travelled])
         # Update the delivered package departure and delivery times
         package.depart_time = truck.departure_time
         package.delivery_time = truck.current_time
@@ -117,10 +118,13 @@ def deliver_packages(truck, hash_table, distance_info):
     truck.distance_travelled = round(truck.distance_travelled, 0)
     truck.current_address = '4001 South 700 East'
     truck.current_time += timedelta(hours=distance_to_hub / truck.speed)
+    truck.time_distance_list.append([truck.current_time, truck.distance_travelled])
 
 
+# Loads the package_hash_table created on line 25 with package objects
 load_package_data(package_hash_table, package_data)
 
+# Delivers packages using the method defined on line 96-121
 deliver_packages(truck1, package_hash_table, distance_data)
 deliver_packages(truck2, package_hash_table, distance_data)
 # Truck 3 departs at 10:20 am, it will be driven by the truck 1 driver after he arrives back at the hub. It contains
@@ -131,13 +135,11 @@ deliver_packages(truck3, package_hash_table, distance_data)
 total_mileage = truck1.distance_travelled + truck2.distance_travelled + truck3.distance_travelled
 print(total_mileage)
 
+# Creates variables to hold the truck inventory so they can be more easily referenced later
 truck1_inv = [15, 19, 14, 13, 16, 20, 17, 1, 29, 30, 31, 34, 37, 40, 24, 26]
 truck2_inv = [3, 6, 18, 25, 28, 32, 36, 38, 2, 4, 5, 7, 8, 21, 22, 23]
 truck3_inv = [9, 10, 11, 12, 27, 33, 35, 39]
 
-
-# NOTE: For the interface, if they enter a time before 10:20, return the old package 9 address, if they enter 10:20 or
-# later, return the updated address
 
 # User command line interface
 class Main:
@@ -149,9 +151,37 @@ class Main:
     # Converts user_time into a timedelta object
     user_time = Functions.time_converter(user_time)
 
+    # Initializes variables needed to calculate the truck mileage at specific times
+    truck1_distance = 0.0
+    truck2_distance = 0.0
+    truck3_distance = 0.0
+    distances1 = []
+    distances2 = []
+    distances3 = []
+
+    # Determines the distance travelled by truck 1 at the user input time. Loops through the truck
+    # time_distance_list, which tracks the distance a truck has travelled at certain time points throughout its
+    # journey. For each time less than the user time, appends the distance travelled at that point to the distances1
+    # list. The Final element of the distances1 list is the current distance of the truck. truck1_distance is set to
+    # that value.
+    for item in truck1.time_distance_list:
+        if user_time > item[0]:
+            distances1.append(item[1])
+            truck1_distance = distances1[len(distances1) - 1]
+    # Same as above, but for truck 2
+    for item in truck2.time_distance_list:
+        if user_time > item[0]:
+            distances2.append(item[1])
+            truck2_distance = distances2[len(distances2) - 1]
+    # Same as above, but for truck 3
+    for item in truck3.time_distance_list:
+        if user_time > item[0]:
+            distances3.append(item[1])
+            truck3_distance = distances3[len(distances3) - 1]
+
     # If statement to check if the user requested all packages or a single package
     if user_input in ('All', 'ALL', 'all'):
-        print("\nTruck 1")
+        print(f"\nTruck 1 - Total Mileage: {truck1_distance}")
         for i in truck1_inv:
             package = package_hash_table.lookup(i)
             package.package_status(user_time)
@@ -163,11 +193,12 @@ class Main:
                 package.zip = '84103'
 
             # Print package info
-            print(f"ID: {package.id} | Deadline: {package.deadline} | Departure Time: {package.depart_time} | "
-                  f"Delivery Time: {package.delivery_time} | Package Status: "
-                  f"{package.status} | Special Notes: {package.special_notes}")
+            print(
+                f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | Departure Time: {package.depart_time} | "
+                f"Delivery Time: {package.delivery_time} | Package Status: "
+                f"{package.status} | Special Notes: {package.special_notes}")
 
-        print("\nTruck 2:")
+        print(f"\nTruck 2 - Total Mileage: {truck2_distance}")
         for i in truck2_inv:
             package = package_hash_table.lookup(i)
             package.package_status(user_time)
@@ -179,11 +210,12 @@ class Main:
                 package.zip = '84103'
 
             # Print package info
-            print(f"ID: {package.id} | Deadline: {package.deadline} | Departure Time: {package.depart_time} | "
-                  f"Delivery Time: {package.delivery_time} | Package Status: "
-                  f"{package.status} | Special Notes: {package.special_notes}")
+            print(
+                f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | Departure Time: {package.depart_time} | "
+                f"Delivery Time: {package.delivery_time} | Package Status: "
+                f"{package.status} | Special Notes: {package.special_notes}")
 
-        print("\nTruck 3:")
+        print(f"\nTruck 3 - Total Mileage: {truck3_distance}")
         for i in truck3_inv:
             package = package_hash_table.lookup(i)
             package.package_status(user_time)
@@ -195,11 +227,12 @@ class Main:
                 package.zip = '84103'
 
             # Print package info
-            print(f"ID: {package.id} | Deadline: {package.deadline} | Departure Time: {package.depart_time} | "
-                  f"Delivery Time: {package.delivery_time} | Package Status: "
-                  f"{package.status} | Special Notes: {package.special_notes}")
+            print(
+                f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | Departure Time: {package.depart_time} | "
+                f"Delivery Time: {package.delivery_time} | Package Status: "
+                f"{package.status} | Special Notes: {package.special_notes}")
 
-        print(f"\nTotal Mileage: {total_mileage}")
+        print(f"\nTotal Mileage (all trucks): {truck1_distance + truck2_distance + truck3_distance}")
 
     elif 1 <= int(user_input) <= 40:
         package = package_hash_table.lookup(int(user_input))
