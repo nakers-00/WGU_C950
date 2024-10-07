@@ -56,7 +56,8 @@ def find_address_index(address, address_info):
 
 # The following methods will be the actual implementation of the nearest neighbor algorithm
 
-# This method finds the distance between two given addresses
+# This method finds the distance between two given addresses This method has a time complexity of O(n) because it
+# calls find_address_index which has a for loop and is therefore O(n)
 def distance_between(address1, address2, distance_info):
     # Get the index of each address in the address_data array
     address1_index = int(find_address_index(address1, address_data))
@@ -80,9 +81,14 @@ def min_distance_from(from_address, truck_not_delivered, hash_table):
     package_id_to_remove = None
 
     # Loop through the truck inventory and find the distance between each package address and the from_address.
-    # Compare that distance with the current min_distance to find the nearest neighbor.
-    # Return the delivery address of that nearest neighbor package
-    # O(n) time complexity due to for loop
+    # Compare that distance with the current min_distance to find the nearest neighbor. Return the delivery address
+    # of that nearest neighbor package.
+    # O(n^3) time complexity due to a for loop which calls .lookup and distance_between.
+    # The .lookup method is a method of the hash table which contains a for loop
+    # The distance_between method calls another method which has a for loop within it.
+    # When the outer loop is called, it first uses .lookup to determine the package object, then distance_between is
+    # called to determine the distance to the package from the current address. Since distance_between requires a for
+    # loop, and it is called for each package object, it adds to time complexity resulting in O(n^3) time complexity.
     for package_id in truck_not_delivered:
         # Finds the package object stored in the hash table corresponding to package ID in the truck inventory
         package = hash_table.lookup(package_id)

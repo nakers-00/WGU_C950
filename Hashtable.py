@@ -5,7 +5,9 @@
 # Citations: C950 - Webinar-1 - Let’s Go Hashing - Recording, Lysecky, R., & Vahid, F. (2018, June). C950:
 # Data Structures and Algorithms II. zyBooks.
 
-# Create hash table class with chaining
+# Create hash table class with chaining This hash table takes in package ID as the key and package objects as the
+# value. Therefore, it holds all necessary data components in the package object and each are easily and efficiently
+# accessible.
 class HashTable:
     # Constructor with initial length of the table to 10 if not specified
     def __init__(self, initial_cap=10):
