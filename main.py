@@ -1,3 +1,4 @@
+# Course: C950 - Student ID: 011359614
 from datetime import timedelta
 import Functions
 from Hashtable import HashTable
@@ -135,7 +136,7 @@ deliver_packages(truck3, package_hash_table, distance_data)
 total_mileage = truck1.distance_travelled + truck2.distance_travelled + truck3.distance_travelled
 print(total_mileage)
 
-# Creates variables to hold the truck inventory so they can be more easily referenced later
+# Creates variables to hold the truck inventory, so they can be more easily referenced later
 truck1_inv = [15, 19, 14, 13, 16, 20, 17, 1, 29, 30, 31, 34, 37, 40, 24, 26]
 truck2_inv = [3, 6, 18, 25, 28, 32, 36, 38, 2, 4, 5, 7, 8, 21, 22, 23]
 truck3_inv = [9, 10, 11, 12, 27, 33, 35, 39]
@@ -197,11 +198,21 @@ class Main:
                     package.address = '300 State St'
                     package.zip = '84103'
 
-                # Print package info
-                print(
-                    f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | Departure Time: {package.depart_time} | "
-                    f"Delivery Time: {package.delivery_time} | Package Status: "
-                    f"{package.status} | Special Notes: {package.special_notes}")
+                # This if statement checks if the package has been delivered at the user input time.
+                # If it yet to be delivered, it prints the output with "Upcoming Delivery Time" to indicate the time at
+                # which the package will be delivered.
+                if package.delivery_time > user_time:
+                    # Print package info
+                    print(
+                        f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | "
+                        f"Departure Time: {package.depart_time} | Upcoming Delivery Time: {package.delivery_time} | "
+                        f"Package Status: {package.status} | Special Notes: {package.special_notes}")
+                # If the package has been delivered then the output shows "Delivery Time".
+                else:
+                    print(
+                        f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | "
+                        f"Departure Time: {package.depart_time} | Delivery Time: {package.delivery_time} | Package "
+                        f"Status: {package.status} | Special Notes: {package.special_notes}")
 
             print(f"\nTruck 2 - Total Mileage: {truck2_distance}")
             for i in truck2_inv:
@@ -214,11 +225,21 @@ class Main:
                     package.address = '300 State St'
                     package.zip = '84103'
 
-                # Print package info
-                print(
-                    f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | Departure Time: {package.depart_time} | "
-                    f"Delivery Time: {package.delivery_time} | Package Status: "
-                    f"{package.status} | Special Notes: {package.special_notes}")
+                # This if statement checks if the package has been delivered at the user input time.
+                # If it yet to be delivered, it prints the output with "Upcoming Delivery Time" to indicate the time at
+                # which the package will be delivered.
+                if package.delivery_time > user_time:
+                    # Print package info
+                    print(
+                        f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | "
+                        f"Departure Time: {package.depart_time} | Upcoming Delivery Time: {package.delivery_time} | "
+                        f"Package Status: {package.status} | Special Notes: {package.special_notes}")
+                # If the package has been delivered then the output shows "Delivery Time".
+                else:
+                    print(
+                        f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | "
+                        f"Departure Time: {package.depart_time} | Delivery Time: {package.delivery_time} | Package "
+                        f"Status: {package.status} | Special Notes: {package.special_notes}")
 
             print(f"\nTruck 3 - Total Mileage: {truck3_distance}")
             for i in truck3_inv:
@@ -231,11 +252,21 @@ class Main:
                     package.address = '300 State St'
                     package.zip = '84103'
 
-                # Print package info
-                print(
-                    f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | Departure Time: {package.depart_time} | "
-                    f"Delivery Time: {package.delivery_time} | Package Status: "
-                    f"{package.status} | Special Notes: {package.special_notes}")
+                # This if statement checks if the package has been delivered at the user input time.
+                # If it yet to be delivered, it prints the output with "Upcoming Delivery Time" to indicate the time at
+                # which the package will be delivered.
+                if package.delivery_time > user_time:
+                    # Print package info
+                    print(
+                        f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | "
+                        f"Departure Time: {package.depart_time} | Upcoming Delivery Time: {package.delivery_time} | "
+                        f"Package Status: {package.status} | Special Notes: {package.special_notes}")
+                # If the package has been delivered then the output shows "Delivery Time".
+                else:
+                    print(
+                        f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | "
+                        f"Departure Time: {package.depart_time} | Delivery Time: {package.delivery_time} | Package "
+                        f"Status: {package.status} | Special Notes: {package.special_notes}")
 
             print(f"\nTotal Mileage (all trucks): {truck1_distance + truck2_distance + truck3_distance}")
 
@@ -258,10 +289,20 @@ class Main:
                 package.address = '300 State St'
                 package.zip = '84103'
 
-            # Print package info
-            print(
-                f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | Departure Time: {package.depart_time} | "
-                f"Delivery Time: {package.delivery_time} | Package Status: "
-                f"{package.status} | Special Notes: {package.special_notes}")
-
-# NOTE: When updating package departure and delivery times, remember to store them with timedelta*
+                # This if statement checks if the package has been delivered at the user input time.
+                # If it yet to be delivered, it prints the output with "Upcoming Delivery Time" to indicate the time at
+                # which the package will be delivered.
+            if package.delivery_time > user_time:
+                # Print package info
+                print(
+                    f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | "
+                    f"Departure Time: {package.depart_time} | Upcoming Delivery Time: {package.delivery_time} | "
+                    f"Package Status: {package.status} | Special Notes: {package.special_notes}")
+            # If the package has been delivered then the output shows "Delivery Time".
+            else:
+                print(
+                    f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | "
+                    f"Departure Time: {package.depart_time} | Delivery Time: {package.delivery_time} | Package "
+                    f"Status: {package.status} | Special Notes: {package.special_notes}")
+        else:
+            print("Invalid input. Please try again.")
