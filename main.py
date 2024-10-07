@@ -4,6 +4,7 @@ import Functions
 from Hashtable import HashTable
 from Package import Package
 from Truck import Truck
+from builtins import ValueError
 
 package_data = Functions.read_package_csv('package.csv')
 address_data = Functions.read_address_csv('addresses.csv')
@@ -134,7 +135,6 @@ deliver_packages(truck2, package_hash_table, distance_data)
 deliver_packages(truck3, package_hash_table, distance_data)
 
 total_mileage = truck1.distance_travelled + truck2.distance_travelled + truck3.distance_travelled
-print(total_mileage)
 
 # Creates variables to hold the truck inventory, so they can be more easily referenced later
 truck1_inv = [15, 19, 14, 13, 16, 20, 17, 1, 29, 30, 31, 34, 37, 40, 24, 26]
@@ -146,50 +146,144 @@ truck3_inv = [9, 10, 11, 12, 27, 33, 35, 39]
 class Main:
     # While loop used so that the program will continue to ask for input until the user decides to exit the program.
     while True:
-        # Gets input from user
-        user_time = input("Please enter a time (24-hour clock) at which to check package information (Ex. 22:00) - "
-                          "type 'exit' to close program: ")
-        # Checks if the user entered 'Exit'. If so, the program is terminated
-        if user_time.lower() == 'exit':
-            print("Goodbye!")
-            exit()
+        # This try-except block encompasses the interface code and will close the program if user input causes a
+        # Value Error
+        try:
+            # Gets input from user
+            user_time = input("Please enter a time (24-hour clock) at which to check package information (Ex. 22:00) - "
+                              "type 'exit' to close program: ")
+            # Checks if the user entered 'Exit'. If so, the program is terminated
+            if user_time.lower() == 'exit':
+                print("Goodbye!")
+                exit()
 
-        user_input = input("If you would like to view a single package, please enter the package ID number. Type "
-                           "'All' to view all packages - type 'exit to close program: ")
-        # Checks if the user entered 'Exit'. If so, the program is terminated
-        if user_input.lower() == 'exit':
-            print("Goodbye!")
-            exit()
+            user_input = input("If you would like to view a single package, please enter the package ID number. Type "
+                               "'All' to view all packages - type 'exit to close program: ")
+            # Checks if the user entered 'Exit'. If so, the program is terminated
+            if user_input.lower() == 'exit':
+                print("Goodbye!")
+                exit()
 
-        # Converts user_time into a timedelta object
-        user_time = Functions.time_converter(user_time)
+            # Converts user_time into a timedelta object
+            user_time = Functions.time_converter(user_time)
 
-        # Initializes variables needed to calculate the truck mileage at specific times
-        truck1_distance = 0.0
-        truck2_distance = 0.0
-        truck3_distance = 0.0
+            # Initializes variables needed to calculate the truck mileage at specific times
+            truck1_distance = 0.0
+            truck2_distance = 0.0
+            truck3_distance = 0.0
 
-        # Determines the distance travelled by truck 1 at the user input time. Loops through the truck
-        # time_distance_list, which tracks the distance a truck has travelled at certain time points throughout its
-        # journey. Sets the value of truck1_distance to the current distance travelled by that truck. The last value
-        # assigned to truck1_distance is the distance travelled at the user input time.
-        for item in truck1.time_distance_list:
-            if user_time > item[0]:
-                truck1_distance = item[1]
-        # Same as above, but for truck 2
-        for item in truck2.time_distance_list:
-            if user_time > item[0]:
-                truck2_distance = item[1]
-        # Same as above, but for truck 3
-        for item in truck3.time_distance_list:
-            if user_time > item[0]:
-                truck3_distance = item[1]
+            # Determines the distance travelled by truck 1 at the user input time. Loops through the truck
+            # time_distance_list, which tracks the distance a truck has travelled at certain time points throughout its
+            # journey. Sets the value of truck1_distance to the current distance travelled by that truck. The last value
+            # assigned to truck1_distance is the distance travelled at the user input time.
+            for item in truck1.time_distance_list:
+                if user_time > item[0]:
+                    truck1_distance = item[1]
+            # Same as above, but for truck 2
+            for item in truck2.time_distance_list:
+                if user_time > item[0]:
+                    truck2_distance = item[1]
+            # Same as above, but for truck 3
+            for item in truck3.time_distance_list:
+                if user_time > item[0]:
+                    truck3_distance = item[1]
 
-        # If statement to check if the user requested all packages or a single package
-        if user_input.lower() == 'all':
-            print(f"\nTruck 1 - Total Mileage: {truck1_distance}")
-            for i in truck1_inv:
-                package = package_hash_table.lookup(i)
+            # If statement to check if the user requested all packages or a single package
+            if user_input.lower() == 'all':
+                print(f"\nTruck 1 - Total Mileage: {round(truck1_distance, 0)}")
+                for i in truck1_inv:
+                    package = package_hash_table.lookup(i)
+                    package.package_status(user_time)
+
+                    # If user_time is before 10:20 am then set the address and zip code to the address and zip before
+                    # it was updated at 10:20 am
+                    if user_time < timedelta(hours=10, minutes=20) and package.id == 9:
+                        package.address = '300 State St'
+                        package.zip = '84103'
+
+                    # This if statement checks if the package has been delivered at the user input time. If it yet to
+                    # be delivered, it prints the output with "Upcoming Delivery Time" to indicate the time at which
+                    # the package will be delivered.
+                    if package.delivery_time > user_time:
+                        # Print package info
+                        print(
+                            f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | "
+                            f"Departure Time: {package.depart_time} | Upcoming Delivery Time: {package.delivery_time} |"
+                            f" Package Status: {package.status} | Special Notes: {package.special_notes}")
+                    # If the package has been delivered then the output shows "Delivery Time".
+                    else:
+                        print(
+                            f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | "
+                            f"Departure Time: {package.depart_time} | Delivery Time: {package.delivery_time} | Package "
+                            f"Status: {package.status} | Special Notes: {package.special_notes}")
+
+                print(f"\nTruck 2 - Total Mileage: {round(truck2_distance, 0)}")
+                for i in truck2_inv:
+                    package = package_hash_table.lookup(i)
+                    package.package_status(user_time)
+
+                    # If user_time is before 10:20 am then set the address and zip code to the address and zip before
+                    # it was updated at 10:20 am
+                    if user_time < timedelta(hours=10, minutes=20) and package.id == 9:
+                        package.address = '300 State St'
+                        package.zip = '84103'
+
+                    # This if statement checks if the package has been delivered at the user input time. If it yet to
+                    # be delivered, it prints the output with "Upcoming Delivery Time" to indicate the time at which
+                    # the package will be delivered.
+                    if package.delivery_time > user_time:
+                        # Print package info
+                        print(
+                            f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | "
+                            f"Departure Time: {package.depart_time} | Upcoming Delivery Time: {package.delivery_time} |"
+                            f" Package Status: {package.status} | Special Notes: {package.special_notes}")
+                    # If the package has been delivered then the output shows "Delivery Time".
+                    else:
+                        print(
+                            f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | "
+                            f"Departure Time: {package.depart_time} | Delivery Time: {package.delivery_time} | Package "
+                            f"Status: {package.status} | Special Notes: {package.special_notes}")
+
+                print(f"\nTruck 3 - Total Mileage: {round(truck3_distance, 0)}")
+                for i in truck3_inv:
+                    package = package_hash_table.lookup(i)
+                    package.package_status(user_time)
+
+                    # If user_time is before 10:20 am then set the address and zip code to the address and zip before
+                    # it was updated at 10:20 am
+                    if user_time < timedelta(hours=10, minutes=20) and package.id == 9:
+                        package.address = '300 State St'
+                        package.zip = '84103'
+
+                    # This if statement checks if the package has been delivered at the user input time. If it yet to
+                    # be delivered, it prints the output with "Upcoming Delivery Time" to indicate the time at which
+                    # the package will be delivered.
+                    if package.delivery_time > user_time:
+                        # Print package info
+                        print(
+                            f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | "
+                            f"Departure Time: {package.depart_time} | Upcoming Delivery Time: {package.delivery_time} |"
+                            f" Package Status: {package.status} | Special Notes: {package.special_notes}")
+                    # If the package has been delivered then the output shows "Delivery Time".
+                    else:
+                        print(
+                            f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | "
+                            f"Departure Time: {package.depart_time} | Delivery Time: {package.delivery_time} | Package "
+                            f"Status: {package.status} | Special Notes: {package.special_notes}")
+
+                print(f"\nTotal Mileage (all trucks): {round(truck1_distance + truck2_distance + truck3_distance, 0)}")
+
+            elif 1 <= int(user_input) <= 40:
+                on_truck = None
+                if int(user_input) in truck1_inv:
+                    on_truck = 1
+                elif int(user_input) in truck2_inv:
+                    on_truck = 2
+                elif int(user_input) in truck3_inv:
+                    on_truck = 3
+
+                print(f"Truck {on_truck}")
+                package = package_hash_table.lookup(int(user_input))
                 package.package_status(user_time)
 
                 # If user_time is before 10:20 am then set the address and zip code to the address and zip before it was
@@ -198,9 +292,9 @@ class Main:
                     package.address = '300 State St'
                     package.zip = '84103'
 
-                # This if statement checks if the package has been delivered at the user input time.
-                # If it yet to be delivered, it prints the output with "Upcoming Delivery Time" to indicate the time at
-                # which the package will be delivered.
+                    # This if statement checks if the package has been delivered at the user input time. If it yet to
+                    # be delivered, it prints the output with "Upcoming Delivery Time" to indicate the time at which
+                    # the package will be delivered.
                 if package.delivery_time > user_time:
                     # Print package info
                     print(
@@ -213,96 +307,9 @@ class Main:
                         f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | "
                         f"Departure Time: {package.depart_time} | Delivery Time: {package.delivery_time} | Package "
                         f"Status: {package.status} | Special Notes: {package.special_notes}")
-
-            print(f"\nTruck 2 - Total Mileage: {truck2_distance}")
-            for i in truck2_inv:
-                package = package_hash_table.lookup(i)
-                package.package_status(user_time)
-
-                # If user_time is before 10:20 am then set the address and zip code to the address and zip before it was
-                # updated at 10:20 am
-                if user_time < timedelta(hours=10, minutes=20) and package.id == 9:
-                    package.address = '300 State St'
-                    package.zip = '84103'
-
-                # This if statement checks if the package has been delivered at the user input time.
-                # If it yet to be delivered, it prints the output with "Upcoming Delivery Time" to indicate the time at
-                # which the package will be delivered.
-                if package.delivery_time > user_time:
-                    # Print package info
-                    print(
-                        f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | "
-                        f"Departure Time: {package.depart_time} | Upcoming Delivery Time: {package.delivery_time} | "
-                        f"Package Status: {package.status} | Special Notes: {package.special_notes}")
-                # If the package has been delivered then the output shows "Delivery Time".
-                else:
-                    print(
-                        f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | "
-                        f"Departure Time: {package.depart_time} | Delivery Time: {package.delivery_time} | Package "
-                        f"Status: {package.status} | Special Notes: {package.special_notes}")
-
-            print(f"\nTruck 3 - Total Mileage: {truck3_distance}")
-            for i in truck3_inv:
-                package = package_hash_table.lookup(i)
-                package.package_status(user_time)
-
-                # If user_time is before 10:20 am then set the address and zip code to the address and zip before it was
-                # updated at 10:20 am
-                if user_time < timedelta(hours=10, minutes=20) and package.id == 9:
-                    package.address = '300 State St'
-                    package.zip = '84103'
-
-                # This if statement checks if the package has been delivered at the user input time.
-                # If it yet to be delivered, it prints the output with "Upcoming Delivery Time" to indicate the time at
-                # which the package will be delivered.
-                if package.delivery_time > user_time:
-                    # Print package info
-                    print(
-                        f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | "
-                        f"Departure Time: {package.depart_time} | Upcoming Delivery Time: {package.delivery_time} | "
-                        f"Package Status: {package.status} | Special Notes: {package.special_notes}")
-                # If the package has been delivered then the output shows "Delivery Time".
-                else:
-                    print(
-                        f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | "
-                        f"Departure Time: {package.depart_time} | Delivery Time: {package.delivery_time} | Package "
-                        f"Status: {package.status} | Special Notes: {package.special_notes}")
-
-            print(f"\nTotal Mileage (all trucks): {truck1_distance + truck2_distance + truck3_distance}")
-
-        elif 1 <= int(user_input) <= 40:
-            on_truck = None
-            if int(user_input) in truck1_inv:
-                on_truck = 1
-            elif int(user_input) in truck2_inv:
-                on_truck = 2
-            elif int(user_input) in truck3_inv:
-                on_truck = 3
-
-            print(f"Truck {on_truck}")
-            package = package_hash_table.lookup(int(user_input))
-            package.package_status(user_time)
-
-            # If user_time is before 10:20 am then set the address and zip code to the address and zip before it was
-            # updated at 10:20 am
-            if user_time < timedelta(hours=10, minutes=20) and package.id == 9:
-                package.address = '300 State St'
-                package.zip = '84103'
-
-                # This if statement checks if the package has been delivered at the user input time.
-                # If it yet to be delivered, it prints the output with "Upcoming Delivery Time" to indicate the time at
-                # which the package will be delivered.
-            if package.delivery_time > user_time:
-                # Print package info
-                print(
-                    f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | "
-                    f"Departure Time: {package.depart_time} | Upcoming Delivery Time: {package.delivery_time} | "
-                    f"Package Status: {package.status} | Special Notes: {package.special_notes}")
-            # If the package has been delivered then the output shows "Delivery Time".
             else:
-                print(
-                    f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | "
-                    f"Departure Time: {package.depart_time} | Delivery Time: {package.delivery_time} | Package "
-                    f"Status: {package.status} | Special Notes: {package.special_notes}")
-        else:
-            print("Invalid input. Please try again.")
+                print("Invalid input. Closing Program.")
+                exit()
+        except ValueError:
+            print("Invalid input. Closing Program.")
+            exit()
