@@ -29,6 +29,8 @@ package_hash_table = HashTable()
 
 # This method takes a hash table and package information as input and loops through the package information array to
 # create package objects and insert them into the hash table
+# O(n^2) time complexity because the for loop calls hash_table.insert(), which is a method of the HashTable class and
+# contains a for-loop
 def load_package_data(hash_table, package_info):
     # O(n) time complexity due to the for loop
     for p in package_info:
@@ -46,7 +48,9 @@ def load_package_data(hash_table, package_info):
         hash_table.insert(p_id, package)
 
 
+# The following methods will be involved in the actual implementation of the nearest neighbor algorithm
 # This method returns the index of an address in the array input as address_info
+# O(n) due to the for-loop
 def find_address_index(address, address_info):
     # O(n) time complexity due to the for loop
     for item in address_info:
@@ -54,10 +58,8 @@ def find_address_index(address, address_info):
             return item[0]
 
 
-# The following methods will be the actual implementation of the nearest neighbor algorithm
-
-# This method finds the distance between two given addresses This method has a time complexity of O(n) because it
-# calls find_address_index which has a for loop and is therefore O(n)
+# This method finds the distance between two given addresses. This method has a time complexity of O(n) because it
+# calls find_address_index which has a for-loop and is therefore O(n)
 def distance_between(address1, address2, distance_info):
     # Get the index of each address in the address_data array
     address1_index = int(find_address_index(address1, address_data))
@@ -74,6 +76,9 @@ def distance_between(address1, address2, distance_info):
 # undelivered packages on the truck. It then returns the address of the package with the nearest delivery address to
 # the current address (from_address). truck_not_delivered will be truck.not_delivered, so it will be a list of package
 # IDs which correspond to package objects stored in the hash table.
+# It has O(n^2) time complexity due to a for loop which calls the .lookup() method and distance_between() method.
+# The .lookup() and distance_between methods both have O(n) time complexity and they are nested at the same level within
+# the outer for-loop; therefore, the time complexity is O(n * 2n) which would simply be O(n^2).
 def min_distance_from(from_address, truck_not_delivered, hash_table):
     # min_distance set to 1000.0 to ensure that the first address compared will always be closer
     min_distance = 1000.0
@@ -83,30 +88,33 @@ def min_distance_from(from_address, truck_not_delivered, hash_table):
     # Loop through the truck inventory and find the distance between each package address and the from_address.
     # Compare that distance with the current min_distance to find the nearest neighbor. Return the delivery address
     # of that nearest neighbor package.
-    # O(n^3) time complexity due to a for loop which calls .lookup and distance_between.
-    # The .lookup method is a method of the hash table which contains a for loop
-    # The distance_between method calls another method which has a for loop within it.
-    # When the outer loop is called, it first uses .lookup to determine the package object, then distance_between is
-    # called to determine the distance to the package from the current address. Since distance_between requires a for
-    # loop, and it is called for each package object, it adds to time complexity resulting in O(n^3) time complexity.
     for package_id in truck_not_delivered:
         # Finds the package object stored in the hash table corresponding to package ID in the truck inventory
         package = hash_table.lookup(package_id)
         # Updates min_distance if a package is found to have a closer delivery address to from_address
-        if distance_between(from_address, package.address, distance_data) < min_distance:
+        distance = distance_between(from_address, package.address, distance_data)
+        if distance < min_distance:
             package_id_to_remove = package_id
             nearest_package_address = package.address
-            min_distance = distance_between(from_address, package.address, distance_data)
+            min_distance = distance
 
     return nearest_package_address, package_id_to_remove
 
 
+# This method uses the methods and objects defined above to determine an efficient order to deliver the packages.
+# The time complexity is O(n^3) due to a while-loop which calls the .lookup() (O(n)), min_distance_from() (O(n^2)), and
+# distance_between() (O(n)) methods. Due to the time complexities and organization of these methods, the time complexity
+# of deliver_packages() simplifies to O(n^3).
 def deliver_packages(truck, hash_table, distance_info):
+    # O(n) time complexity from while loop
     while len(truck.not_delivered) > 0:
+        # O(n^2) time complexity
         delivery_address, package_delivered_id = min_distance_from(truck.current_address, truck.not_delivered,
                                                                    hash_table)
         package_delivered_id = int(package_delivered_id)
+        # O(n) time complexity
         package = hash_table.lookup(package_delivered_id)
+        # O(n)
         distance = distance_between(truck.current_address, delivery_address, distance_info)
         # Increment the distance travelled by the truck
         truck.distance_travelled += distance
@@ -121,6 +129,7 @@ def deliver_packages(truck, hash_table, distance_info):
         package.depart_time = truck.departure_time
         package.delivery_time = truck.current_time
 
+    # O(n)
     distance_to_hub = distance_between(truck.current_address, '4001 South 700 East', distance_info)
     truck.distance_travelled += distance_to_hub
     truck.distance_travelled = round(truck.distance_travelled, 0)
@@ -149,6 +158,9 @@ truck3_inv = [9, 10, 11, 12, 27, 33, 35, 39]
 
 
 # User command line interface
+# Overall time complexity is O(n^2) due to the while-loop containing nested for-loops. Although there are multiple
+# for-loops nested within the while-loop, their complexities will not multiply duo to their organization.
+# Therefore, the simplified time complexity is O(n^2).
 class Main:
     # While loop used so that the program will continue to ask for input until the user decides to exit the program.
     while True:
@@ -182,6 +194,7 @@ class Main:
             # time_distance_list, which tracks the distance a truck has travelled at certain time points throughout its
             # journey. Sets the value of truck1_distance to the current distance travelled by that truck. The last value
             # assigned to truck1_distance is the distance travelled at the user input time.
+            # Each of these loops is O(n), they are not nested, so they do not multiply.
             for item in truck1.time_distance_list:
                 if user_time > item[0]:
                     truck1_distance = item[1]
@@ -197,15 +210,10 @@ class Main:
             # If statement to check if the user requested all packages or a single package
             if user_input.lower() == 'all':
                 print(f"\nTruck 1 - Total Mileage: {round(truck1_distance, 0)}")
+                # O(n) time complexity
                 for i in truck1_inv:
                     package = package_hash_table.lookup(i)
                     package.package_status(user_time)
-
-                    # If user_time is before 10:20 am then set the address and zip code to the address and zip before
-                    # it was updated at 10:20 am
-                    if user_time < timedelta(hours=10, minutes=20) and package.id == 9:
-                        package.address = '300 State St'
-                        package.zip = '84103'
 
                     # This if statement checks if the package has been delivered at the user input time. If it yet to
                     # be delivered, it prints the output with "Upcoming Delivery Time" to indicate the time at which
@@ -224,15 +232,10 @@ class Main:
                             f"Status: {package.status} | Special Notes: {package.special_notes}")
 
                 print(f"\nTruck 2 - Total Mileage: {round(truck2_distance, 0)}")
+                # O(n) time complexity
                 for i in truck2_inv:
                     package = package_hash_table.lookup(i)
                     package.package_status(user_time)
-
-                    # If user_time is before 10:20 am then set the address and zip code to the address and zip before
-                    # it was updated at 10:20 am
-                    if user_time < timedelta(hours=10, minutes=20) and package.id == 9:
-                        package.address = '300 State St'
-                        package.zip = '84103'
 
                     # This if statement checks if the package has been delivered at the user input time. If it yet to
                     # be delivered, it prints the output with "Upcoming Delivery Time" to indicate the time at which
@@ -251,15 +254,20 @@ class Main:
                             f"Status: {package.status} | Special Notes: {package.special_notes}")
 
                 print(f"\nTruck 3 - Total Mileage: {round(truck3_distance, 0)}")
+                # O(n) time complexity
                 for i in truck3_inv:
                     package = package_hash_table.lookup(i)
                     package.package_status(user_time)
+                    p_address = package.address
+                    p_zip = package.zip
 
                     # If user_time is before 10:20 am then set the address and zip code to the address and zip before
                     # it was updated at 10:20 am
+                    # This logic is only needed for Truck 3 because package 9 will always be on Truck 3 because it
+                    # departs after the package address is updated.
                     if user_time < timedelta(hours=10, minutes=20) and package.id == 9:
-                        package.address = '300 State St'
-                        package.zip = '84103'
+                        p_address = '300 State St'
+                        p_zip = '84103'
 
                     # This if statement checks if the package has been delivered at the user input time. If it yet to
                     # be delivered, it prints the output with "Upcoming Delivery Time" to indicate the time at which
@@ -267,13 +275,13 @@ class Main:
                     if package.delivery_time > user_time:
                         # Print package info
                         print(
-                            f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | "
+                            f"ID: {package.id} | Delivery Address: {p_address} | Deadline: {package.deadline} | "
                             f"Departure Time: {package.depart_time} | Upcoming Delivery Time: {package.delivery_time} |"
                             f" Package Status: {package.status} | Special Notes: {package.special_notes}")
                     # If the package has been delivered then the output shows "Delivery Time".
                     else:
                         print(
-                            f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | "
+                            f"ID: {package.id} | Delivery Address: {p_address} | Deadline: {package.deadline} | "
                             f"Departure Time: {package.depart_time} | Delivery Time: {package.delivery_time} | Package "
                             f"Status: {package.status} | Special Notes: {package.special_notes}")
 
@@ -281,6 +289,8 @@ class Main:
 
             elif 1 <= int(user_input) <= 40:
                 on_truck = None
+                # Complexity of O(n) because truck_inv is iterated over, not nested loops, so the complexities don't
+                # multiply
                 if int(user_input) in truck1_inv:
                     on_truck = 1
                 elif int(user_input) in truck2_inv:
@@ -289,14 +299,17 @@ class Main:
                     on_truck = 3
 
                 print(f"Truck {on_truck}")
+                # O(n) time complexity
                 package = package_hash_table.lookup(int(user_input))
                 package.package_status(user_time)
+                p_address = package.address
+                p_zip = package.zip
 
                 # If user_time is before 10:20 am then set the address and zip code to the address and zip before it was
                 # updated at 10:20 am
                 if user_time < timedelta(hours=10, minutes=20) and package.id == 9:
-                    package.address = '300 State St'
-                    package.zip = '84103'
+                    p_address = '300 State St'
+                    p_zip = '84103'
 
                     # This if statement checks if the package has been delivered at the user input time. If it yet to
                     # be delivered, it prints the output with "Upcoming Delivery Time" to indicate the time at which
@@ -304,13 +317,13 @@ class Main:
                 if package.delivery_time > user_time:
                     # Print package info
                     print(
-                        f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | "
+                        f"ID: {package.id} | Delivery Address: {p_address} | Deadline: {package.deadline} | "
                         f"Departure Time: {package.depart_time} | Upcoming Delivery Time: {package.delivery_time} | "
                         f"Package Status: {package.status} | Special Notes: {package.special_notes}")
                 # If the package has been delivered then the output shows "Delivery Time".
                 else:
                     print(
-                        f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | "
+                        f"ID: {package.id} | Delivery Address: {p_address} | Deadline: {package.deadline} | "
                         f"Departure Time: {package.depart_time} | Delivery Time: {package.delivery_time} | Package "
                         f"Status: {package.status} | Special Notes: {package.special_notes}")
             else:

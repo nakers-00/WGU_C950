@@ -22,13 +22,13 @@ class HashTable:
         self.max_chain_length = 5
 
     # Insert package details (value) into table based on the package ID (key)
+    # O(n) time complexity due to the for loop
     def insert(self, key, value):
         # Determine the bucket that the package ID will be hashed into
         bucket = hash(key) % len(self.table)
         bucket_list = self.table[bucket]
 
         # If the package ID is already in the bucket list, update the package details
-        # O(n) time complexity due to the for loop
         for kv in bucket_list:
             if kv == key:
                 kv[1] = value
@@ -45,13 +45,13 @@ class HashTable:
         return True
 
     # Search for value given a key
+    # O(n) time complexity due to the for loop
     def lookup(self, key):
         # Find the bucket that the key would be in
         bucket = hash(key) % len(self.table)
         bucket_list = self.table[bucket]
 
         # Search the bucket_list for the package ID, return the details associated with the ID
-        # O(n) time complexity due to the for loop
         for kv in bucket_list:
             if kv[0] == key:
                 return kv[1]
@@ -59,18 +59,21 @@ class HashTable:
         # If key is not in the bucket list, return None
         return None
 
+    # Remove a kv pair given a key
+    # O(n) time complexity due to the for loop
+    # This is not used in the current program but is added because it is needed for a proper hash table
     def remove(self, key):
         # Find the bucket that the key is in
         bucket = hash(key) % len(self.table)
         bucket_list = self.table[bucket]
 
         # Remove the kv pair from the bucket if it is present
-        # O(n) time complexity due to the for loop
         for kv in bucket_list:
             if kv[0] == key:
                 bucket_list.remove([kv[0], kv[1]])
 
     # Creates resize function that allows for self-adjusting nature of the hash table
+    # O(n^2) time complexity due to the nested for loop
     def _resize(self, new_cap):
         original_table = self.table
         self.cap = new_cap
@@ -79,7 +82,6 @@ class HashTable:
         self.table = [[] for i in range(self.cap)]
 
         # Insert the data from the original table into the new, resized table
-        # # O(n^2) time complexity due to the nested for loop
         for bucket in original_table:
             for k, v in bucket:
                 self.insert(k, v)
