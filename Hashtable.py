@@ -9,8 +9,8 @@
 # value. Therefore, it holds all necessary data components in the package object and each are easily and efficiently
 # accessible.
 class HashTable:
-    # Constructor with initial length of the table to 10 if not specified
-    def __init__(self, initial_cap=10):
+    # Constructor with initial length of the table to 40 if not specified
+    def __init__(self, initial_cap=40):
         # Hash table is initialized with empty buckets, each bucket is a list
         self.cap = initial_cap
         self.table = []

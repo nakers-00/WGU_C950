@@ -20,6 +20,7 @@ time when its address will be updated.
 
 F.3:
 Dijkstra's shortest path algorithm and the 2-opt algorithm could also be used for this project.
+
 Dijkstra's shortest path is different from my algorithm, the nearest neighbor, because Dijkstra's algorithm starts at
 a starting node in a graph and determines the shortest path to every other node from that starting node (Lysecky). 
 Nearest neighbor simply finds the next closest delivery address to the current address, without considering the overall path.
@@ -32,7 +33,8 @@ finds one. A primary goal of the 2-opt algorithm revolves around eliminating edg
 route. The nearest neighbor algorithm does not do any sort of analysis of the route other than finding the closest 
 address to the current address. 
 
-(Lysecky, R., & Vahid, F. (2018, June). C950: # Data Structures and Algorithms II. zyBooks.)
+(Lysecky, R., & Vahid, F. (2018, June). C950: # Data Structures and Algorithms II. zyBooks.
+https://learn.zybooks.com/zybook/WGUC950Template2023)
 (Weru, Lawrence. “11 Animated Algorithms for the Traveling Salesman Problem.” STEM Lounge, STEM Lounge, 
 24 Aug. 2021, stemlounge.com/animated-algorithms-for-the-traveling-salesman-problem/.)
 
@@ -56,10 +58,28 @@ package objects already contain the package information. This allows for much ea
 during my nearest neighbor algorithm. The hash table that I created also has a look-up function that takes in a package
 ID and returns a package object, which contains all the required package information in an easy-to-access format. 
 
-Another data structure that I could use is a weighted graph. This data structure would store package information along
-with information about the distances between the delivery addresses of each package. This would allow for easy access
-to package information as well as information about their distances. This would negate some of the need for the delivery
-algorithm to calculate the distances between packages, because that information would be stored with the package info.
+H.1:
+Other data structures that I could have used to store package information are a Binary Search Tree (BST) or an AVL tree.
 
-(Lysecky, R., & Vahid, F. (2018, June). C950: # Data Structures and Algorithms II. zyBooks.)
+H.1.a:
+Unlike a hash table, a BST does not require collision handling because items are stored in a specific order. My hash table simply stores items based on their hash value, a BST will store items based on the value of their key relative to other items. 
+A BST is also more memory efficient than a hash table and will only take up as much memory as needed at any given moment
+and will not need to be resized like a hash table. A hash table takes up as much memory as it allocates, even if it only
+uses a small portion of that memory. A BST requires pointers certain other nodes, the hash table does not use pointers.  
+A BST hs an average time complexity of O(log n) for all operations. However, a simple BST does not have height balancing 
+properties so this time complexity is not guaranteed. The worst case time complexity of a BST is O(n). The 
+average time complexity of a hash table is O(1) and the worst case time complexity is O(n). Therefore, a hash table is 
+probably better for this project.
+
+An AVL tree is similar to a BST, but it has a height balance property that keeps the tree balanced to the least possible 
+height after any insertion or removal. An AVL tree is different from a hash table in that it does not require collision 
+handling, only rearrangement. Another difference is that an AVL tree guarantees O(log n) time complexity in all
+operations. This is, however, not better than the average O(1) time complexity that is expected from a hash table. 
+This O(1) time assumes perfect hashing and since I use chaining, a for-loop is needed to access data held in the chains. This will
+lead to O(n) time complexity for operations on the hash table, but due to small max chain sizes and resizing, the
+time complexity should still be more efficient than an AVL tree. However, having a guaranteed time complexity of O(log n)
+may be beneficial in some cases.
+
+(Lysecky, R., & Vahid, F. (2018, June). C950: # Data Structures and Algorithms II. zyBooks.
+https://learn.zybooks.com/zybook/WGUC950Template2023)
 
