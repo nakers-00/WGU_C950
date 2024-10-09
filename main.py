@@ -130,6 +130,8 @@ def deliver_packages(truck, hash_table, distance_info):
         package.delivery_time = truck.current_time
 
     # O(n)
+    # The address of the hub is input directly as the hub address. If this program is being used in another city/state,
+    # the hub address should be updated here.
     distance_to_hub = distance_between(truck.current_address, '4001 South 700 East', distance_info)
     truck.distance_travelled += distance_to_hub
     truck.distance_travelled = round(truck.distance_travelled, 0)
