@@ -1,15 +1,29 @@
 F:
-Another algorithm that could be used is Kruskal's minimum spanning tree algorithm. This algorithm determines the
-shortest path that connects all vertices of a graph. It would be paired with a weighted graph data structure
-(discussed in part H) to determine the shortest path between packages on a given truck. This algorithm would be used to 
-determine the path of least distance that visits all delivery addresses of the packages on a given truck.
-This algorithm is different from the nearest neighbor algorithm used in my current implementation of this program in a
-few key ways. First, it would use a different data structure, one that indicates the distances between package delivery
-addresses. This algorithm also has different time and space complexities than the nearest neighbor algorithm. Kruskal's
-algorithm has a space complexity of O(E + V) (E = number of edges, V = number of vertices) and a time complexity of
-O(ElogE) (E = number of edges). The nearest neighbor algorithm used in my current program has a time complexity
-of O(n^3).
+F.1: 
+Two Strengths
+
+F.2:
+Meets requirements - Delivers packages in 115 miles, which is under 140 miles, and all time deadlines are met. All special notes are followed
+and packages are loaded onto the correct truck when specified and delivered with the correct other packages when specified.
+The packages that are delayed on flights do not depart the hub until after they arrive on the flight.
+
+Dijkstra's shortest path algorithm and the 2-opt algorithm could also be used for this project.
+Dijkstra's shortest path is different from my algorithm, the nearest neighbor, because Dijkstra's algorithm starts at
+a starting node in a graph and determines the shortest path to every other node from that starting node (Lysecky). 
+Nearest neighbor simply finds the next closest delivery address to the current address, without considering the overall path.
+Dijkstra's algorithm is more likely to find an optimal path.
+
+The 2-opt algorithm will take a route that already delivers all packages and then go back through the route and look at
+every possible swaps between two edges (Weru). It then swaps edges when it finds a swap that results in a shorter route. This
+is different from the nearest neighbor algorithm because the nearest neighbor algorithm does not alter its route once it
+finds one. A primary goal of the 2-opt algorithm revolves around eliminating edges that cross over each other in the 
+route. The nearest neighbor algorithm does not do any sort of analysis of the route other than finding the closest 
+address to the current address. 
+
 (Lysecky, R., & Vahid, F. (2018, June). C950: # Data Structures and Algorithms II. zyBooks.)
+(Weru, Lawrence. “11 Animated Algorithms for the Traveling Salesman Problem.” STEM Lounge, STEM Lounge, 
+24 Aug. 2021, stemlounge.com/animated-algorithms-for-the-traveling-salesman-problem/.)
+
 G:
 If I were to do this project again I would use a graphical user interface rather than a 
 command line interface. I would use the FreeSimpleGUI library because it is something with
@@ -26,8 +40,6 @@ Another data structure that I could use is a weighted graph. This data structure
 with information about the distances between the delivery addresses of each package. This would allow for easy access
 to package information as well as information about their distances. This would negate some of the need for the delivery
 algorithm to calculate the distances between packages, because that information would be stored with the package info.
-This would pair particualrly well with Kruskal's minimum spanning tree algorithm discussed in part F because it will
-provide the distances between each vertex and the algorithm can use that information to determine the overall shortest 
-path.
+
 (Lysecky, R., & Vahid, F. (2018, June). C950: # Data Structures and Algorithms II. zyBooks.)
 
