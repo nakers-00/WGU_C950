@@ -160,9 +160,9 @@ truck3_inv = [9, 10, 11, 12, 27, 33, 35, 39]
 
 
 # User command line interface
-# Overall time complexity is O(n^2) due to the while-loop containing nested for-loops. Although there are multiple
-# for-loops nested within the while-loop, their complexities will not multiply duo to their organization.
-# Therefore, the simplified time complexity is O(n^2).
+# Overall time complexity is O(n^3) due to the while-loop containing nested for-loops. Although there are multiple
+# for-loops nested within the while-loop, all their complexities will not multiply duo to their organization.
+# Therefore, the simplified time complexity is O(n^3).
 class Main:
     # While loop used so that the program will continue to ask for input until the user decides to exit the program.
     while True:
