@@ -116,15 +116,15 @@ def deliver_packages(truck, hash_table, distance_info):
         package = hash_table.lookup(package_delivered_id)
         # O(n)
         distance = distance_between(truck.current_address, delivery_address, distance_info)
-        # Increment the distance travelled by the truck
-        truck.distance_travelled += distance
+        # Increment the distance traveled by the truck
+        truck.distance_traveled += distance
         # Remove the delivered package from the truck.not_delivered list
         truck.not_delivered.remove(package_delivered_id)
         # Change the truck current address to the address of the most recently delivered package
         truck.current_address = delivery_address
         # Increment the current time of the truck
         truck.current_time += timedelta(hours=distance / truck.speed)
-        truck.time_distance_list.append([truck.current_time, truck.distance_travelled])
+        truck.time_distance_list.append([truck.current_time, truck.distance_traveled])
         # Update the delivered package departure and delivery times
         package.depart_time = truck.departure_time
         package.delivery_time = truck.current_time
@@ -133,11 +133,11 @@ def deliver_packages(truck, hash_table, distance_info):
     # The address of the hub is input directly as the hub address. If this program is being used in another city/state,
     # the hub address should be updated here.
     distance_to_hub = distance_between(truck.current_address, '4001 South 700 East', distance_info)
-    truck.distance_travelled += distance_to_hub
-    truck.distance_travelled = round(truck.distance_travelled, 0)
+    truck.distance_traveled += distance_to_hub
+    truck.distance_traveled = round(truck.distance_traveled, 0)
     truck.current_address = '4001 South 700 East'
     truck.current_time += timedelta(hours=distance_to_hub / truck.speed)
-    truck.time_distance_list.append([truck.current_time, truck.distance_travelled])
+    truck.time_distance_list.append([truck.current_time, truck.distance_traveled])
 
 
 # Loads the package_hash_table created on line 25 with package objects
@@ -151,7 +151,7 @@ deliver_packages(truck2, package_hash_table, distance_data)
 # leave until that package address is updated.
 deliver_packages(truck3, package_hash_table, distance_data)
 
-total_mileage = truck1.distance_travelled + truck2.distance_travelled + truck3.distance_travelled
+total_mileage = truck1.distance_traveled + truck2.distance_traveled + truck3.distance_traveled
 
 # Creates variables to hold the truck inventory, so they can be more easily referenced later
 truck1_inv = [15, 19, 14, 13, 16, 20, 17, 1, 29, 30, 31, 34, 37, 40, 24, 26]
@@ -192,10 +192,10 @@ class Main:
             truck2_distance = 0.0
             truck3_distance = 0.0
 
-            # Determines the distance travelled by truck 1 at the user input time. Loops through the truck
-            # time_distance_list, which tracks the distance a truck has travelled at certain time points throughout its
-            # journey. Sets the value of truck1_distance to the current distance travelled by that truck. The last value
-            # assigned to truck1_distance is the distance travelled at the user input time.
+            # Determines the distance traveled by truck 1 at the user input time. Loops through the truck
+            # time_distance_list, which tracks the distance a truck has traveled at certain time points throughout its
+            # journey. Sets the value of truck1_distance to the current distance traveled by that truck. The last value
+            # assigned to truck1_distance is the distance traveled at the user input time.
             # Each of these loops is O(n), they are not nested, so they do not multiply.
             for item in truck1.time_distance_list:
                 if user_time > item[0]:
