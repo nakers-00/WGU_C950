@@ -1,4 +1,4 @@
-# Course: C950 - Student ID: 011359614
+# Course: C950 - Name: Noah Akers - Student ID: 011359614
 from datetime import timedelta
 import Functions
 from Hashtable import HashTable
