@@ -1,6 +1,4 @@
 # This file is the hash table that will be used to store package info.
-# Citations: C950 - Webinar-1 - Let’s Go Hashing - Recording, Lysecky, R., & Vahid, F. (2018, June). C950:
-# Data Structures and Algorithms II. zyBooks.
 # Create hash table class with chaining. This hash table takes in package ID as the key and package objects as the
 # value. Therefore, it holds all necessary data components in the package object and each are easily and efficiently
 # accessible.

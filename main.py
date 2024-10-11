@@ -31,6 +31,7 @@ package_hash_table = HashTable()
 # create package objects and insert them into the hash table
 # O(n^2) time complexity because the for loop calls hash_table.insert(), which is a method of the HashTable class and
 # contains a for-loop
+# Space complexity O(1)
 def load_package_data(hash_table, package_info):
     # O(n) time complexity due to the for loop
     for p in package_info:
@@ -38,12 +39,13 @@ def load_package_data(hash_table, package_info):
         p_address = p[1]
         p_deadline = p[2]
         p_city = p[3]
-        p_zip = p[4]
-        p_weight = p[5]
-        p_status = p[6]
-        p_special_notes = p[7]
+        p_state = p[4]
+        p_zip = p[5]
+        p_weight = p[6]
+        p_status = p[7]
+        p_special_notes = p[8]
 
-        package = Package(p_id, p_address, p_deadline, p_city, p_zip, p_weight, p_status, p_special_notes)
+        package = Package(p_id, p_address, p_deadline, p_city, p_state, p_zip, p_weight, p_status, p_special_notes)
 
         hash_table.insert(p_id, package)
 
@@ -51,6 +53,7 @@ def load_package_data(hash_table, package_info):
 # The following methods will be involved in the actual implementation of the nearest neighbor algorithm
 # This method returns the index of an address in the array input as address_info
 # O(n) due to the for-loop
+# O(1) space complexity
 def find_address_index(address, address_info):
     # O(n) time complexity due to the for loop
     for item in address_info:
@@ -60,6 +63,7 @@ def find_address_index(address, address_info):
 
 # This method finds the distance between two given addresses. This method has a time complexity of O(n) because it
 # calls find_address_index which has a for-loop and is therefore O(n)
+# Space complexity is O(1)
 def distance_between(address1, address2, distance_info):
     # Get the index of each address in the address_data array
     address1_index = int(find_address_index(address1, address_data))
@@ -73,12 +77,13 @@ def distance_between(address1, address2, distance_info):
 
 
 # This method takes in an address and compares it with the delivery address of each package in the list of
-# undelivered packages on the truck. It then returns the address of the package with the nearest delivery address to
-# the current address (from_address). truck_not_delivered will be truck.not_delivered, so it will be a list of package
-# IDs which correspond to package objects stored in the hash table.
+# undelivered packages on the truck. It then returns the address and package ID of the package with the nearest delivery
+# address to the current address (from_address). truck_not_delivered will be truck.not_delivered, so it will be a list
+# of package IDs which correspond to package objects stored in the hash table.
 # It has O(n^2) time complexity due to a for loop which calls the .lookup() method and distance_between() method.
 # The .lookup() and distance_between methods both have O(n) time complexity and they are nested at the same level within
 # the outer for-loop; therefore, the time complexity is O(n * 2n) which would simply be O(n^2).
+# O(1) space complexity
 def min_distance_from(from_address, truck_not_delivered, hash_table):
     # min_distance set to 1000.0 to ensure that the first address compared will always be closer
     min_distance = 1000.0
@@ -105,6 +110,7 @@ def min_distance_from(from_address, truck_not_delivered, hash_table):
 # The time complexity is O(n^3) due to a while-loop which calls the .lookup() (O(n)), min_distance_from() (O(n^2)), and
 # distance_between() (O(n)) methods. Due to the time complexities and organization of these methods, the time complexity
 # of deliver_packages() simplifies to O(n^3).
+# O(1) space complexity
 def deliver_packages(truck, hash_table, distance_info):
     # O(n) time complexity from while loop
     while len(truck.not_delivered) > 0:
@@ -163,6 +169,7 @@ truck3_inv = [9, 10, 11, 12, 27, 33, 35, 39]
 # Overall time complexity is O(n^3) due to the while-loop containing nested for-loops. Although there are multiple
 # for-loops nested within the while-loop, all their complexities will not multiply duo to their organization.
 # Therefore, the simplified time complexity is O(n^3).
+# Space complexity is O(1)
 class Main:
     # While loop used so that the program will continue to ask for input until the user decides to exit the program.
     while True:
@@ -211,7 +218,7 @@ class Main:
 
             # If statement to check if the user requested all packages or a single package
             if user_input.lower() == 'all':
-                print(f"\nTruck 1 - Total Mileage: {round(truck1_distance, 0)}")
+                print(f"\nTruck 1 - Total Mileage: {round(truck1_distance, 0)} miles")
                 # O(n) time complexity
                 for i in truck1_inv:
                     package = package_hash_table.lookup(i)
@@ -223,17 +230,20 @@ class Main:
                     if package.delivery_time > user_time:
                         # Print package info
                         print(
-                            f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | "
-                            f"Departure Time: {package.depart_time} | Upcoming Delivery Time: {package.delivery_time} |"
-                            f" Package Status: {package.status} | Special Notes: {package.special_notes}")
+                            f"ID: {package.id} | Delivery Address: {package.address} | City: {package.city} | State:"
+                            f" {package.state} | Zip: {package.zip} | Deadline: {package.deadline} | Departure Time:"
+                            f" {package.depart_time} | Upcoming Delivery Time: {package.delivery_time} | Package"
+                            f" Status: {package.status} | Weight: {package.weight} kg | Special Notes: "
+                            f"{package.special_notes}")
                     # If the package has been delivered then the output shows "Delivery Time".
                     else:
                         print(
-                            f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | "
-                            f"Departure Time: {package.depart_time} | Delivery Time: {package.delivery_time} | Package "
-                            f"Status: {package.status} | Special Notes: {package.special_notes}")
+                            f"ID: {package.id} | Delivery Address: {package.address} | City: {package.city} | State:"
+                            f" {package.state} | Zip: {package.zip} | Deadline: {package.deadline} | Departure Time:"
+                            f" {package.depart_time} | Delivery Time: {package.delivery_time} | Package Status:"
+                            f" {package.status} | Weight: {package.weight} kg | Special Notes: {package.special_notes}")
 
-                print(f"\nTruck 2 - Total Mileage: {round(truck2_distance, 0)}")
+                print(f"\nTruck 2 - Total Mileage: {round(truck2_distance, 0)} miles")
                 # O(n) time complexity
                 for i in truck2_inv:
                     package = package_hash_table.lookup(i)
@@ -245,17 +255,20 @@ class Main:
                     if package.delivery_time > user_time:
                         # Print package info
                         print(
-                            f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | "
-                            f"Departure Time: {package.depart_time} | Upcoming Delivery Time: {package.delivery_time} |"
-                            f" Package Status: {package.status} | Special Notes: {package.special_notes}")
+                            f"ID: {package.id} | Delivery Address: {package.address} | City: {package.city} | State:"
+                            f" {package.state} | Zip: {package.zip} | Deadline: {package.deadline} | Departure Time:"
+                            f" {package.depart_time} | Upcoming Delivery Time: {package.delivery_time} | Package"
+                            f" Status: {package.status} | Weight: {package.weight} kg | Special Notes: "
+                            f"{package.special_notes}")
                     # If the package has been delivered then the output shows "Delivery Time".
                     else:
                         print(
-                            f"ID: {package.id} | Delivery Address: {package.address} | Deadline: {package.deadline} | "
-                            f"Departure Time: {package.depart_time} | Delivery Time: {package.delivery_time} | Package "
-                            f"Status: {package.status} | Special Notes: {package.special_notes}")
+                            f"ID: {package.id} | Delivery Address: {package.address} | City: {package.city} | State:"
+                            f" {package.state} | Zip: {package.zip} | Deadline: {package.deadline} | Departure Time:"
+                            f" {package.depart_time} | Delivery Time: {package.delivery_time} | Package Status:"
+                            f" {package.status} | Weight: {package.weight} kg | Special Notes: {package.special_notes}")
 
-                print(f"\nTruck 3 - Total Mileage: {round(truck3_distance, 0)}")
+                print(f"\nTruck 3 - Total Mileage: {round(truck3_distance, 0)} miles")
                 # O(n) time complexity
                 for i in truck3_inv:
                     package = package_hash_table.lookup(i)
@@ -277,30 +290,38 @@ class Main:
                     if package.delivery_time > user_time:
                         # Print package info
                         print(
-                            f"ID: {package.id} | Delivery Address: {p_address} | Deadline: {package.deadline} | "
-                            f"Departure Time: {package.depart_time} | Upcoming Delivery Time: {package.delivery_time} |"
-                            f" Package Status: {package.status} | Special Notes: {package.special_notes}")
+                            f"ID: {package.id} | Delivery Address: {p_address} | City: {package.city} | State:"
+                            f" {package.state} | Zip: {p_zip} | Deadline: {package.deadline} | Departure Time:"
+                            f" {package.depart_time} | Upcoming Delivery Time: {package.delivery_time} | Package"
+                            f" Status: {package.status} | Weight: {package.weight} kg | Special Notes: "
+                            f"{package.special_notes}")
                     # If the package has been delivered then the output shows "Delivery Time".
                     else:
                         print(
-                            f"ID: {package.id} | Delivery Address: {p_address} | Deadline: {package.deadline} | "
-                            f"Departure Time: {package.depart_time} | Delivery Time: {package.delivery_time} | Package "
-                            f"Status: {package.status} | Special Notes: {package.special_notes}")
+                            f"ID: {package.id} | Delivery Address: {p_address} | City: {package.city} | State:"
+                            f" {package.state} | Zip: {p_zip} | Deadline: {package.deadline} | Departure Time:"
+                            f" {package.depart_time} | Delivery Time: {package.delivery_time} | Package Status:"
+                            f" {package.status} | Weight: {package.weight} kg | Special Notes: {package.special_notes}")
 
-                print(f"\nTotal Mileage (all trucks): {round(truck1_distance + truck2_distance + truck3_distance, 0)}")
+                print(f"\nTotal Mileage (all trucks): {round(truck1_distance + truck2_distance + truck3_distance, 0)}"
+                      f" miles")
 
             elif 1 <= int(user_input) <= 40:
                 on_truck = None
+                truck_miles = None
                 # Complexity of O(n) because truck_inv is iterated over, not nested loops, so the complexities don't
                 # multiply
                 if int(user_input) in truck1_inv:
                     on_truck = 1
+                    truck_miles = truck1_distance
                 elif int(user_input) in truck2_inv:
                     on_truck = 2
+                    truck_miles = truck2_distance
                 elif int(user_input) in truck3_inv:
                     on_truck = 3
+                    truck_miles = truck3_distance
 
-                print(f"Truck {on_truck}")
+                print(f"Truck {on_truck} - Total Mileage: {truck_miles}")
                 # O(n) time complexity
                 package = package_hash_table.lookup(int(user_input))
                 package.package_status(user_time)
@@ -319,18 +340,22 @@ class Main:
                 if package.delivery_time > user_time:
                     # Print package info
                     print(
-                        f"ID: {package.id} | Delivery Address: {p_address} | Deadline: {package.deadline} | "
-                        f"Departure Time: {package.depart_time} | Upcoming Delivery Time: {package.delivery_time} | "
-                        f"Package Status: {package.status} | Special Notes: {package.special_notes}")
-                # If the package has been delivered then the output shows "Delivery Time".
+                        f"ID: {package.id} | Delivery Address: {p_address} | City: {package.city} | State:"
+                        f" {package.state} | Zip: {p_zip} | Deadline: {package.deadline} | Departure Time:"
+                        f" {package.depart_time} | Upcoming Delivery Time: {package.delivery_time} | Package"
+                        f" Status: {package.status} | Weight: {package.weight} kg | Special Notes: "
+                        f"{package.special_notes}")
+                    # If the package has been delivered then the output shows "Delivery Time".
                 else:
                     print(
-                        f"ID: {package.id} | Delivery Address: {p_address} | Deadline: {package.deadline} | "
-                        f"Departure Time: {package.depart_time} | Delivery Time: {package.delivery_time} | Package "
-                        f"Status: {package.status} | Special Notes: {package.special_notes}")
+                        f"ID: {package.id} | Delivery Address: {p_address} | City: {package.city} | State:"
+                        f" {package.state} | Zip: {p_zip} | Deadline: {package.deadline} | Departure Time:"
+                        f" {package.depart_time} | Delivery Time: {package.delivery_time} | Package Status:"
+                        f" {package.status} | Weight: {package.weight} kg | Special Notes: {package.special_notes}")
             else:
-                print("Invalid input. Closing Program.")
+                print("Invalid input. Please ensure that you are entering valid inputs into each field."
+                      " Closing Program.")
                 exit()
         except ValueError:
-            print("Invalid input. Closing Program.")
+            print("Invalid input. Please ensure that you are entering valid inputs into each field. Closing Program.")
             exit()

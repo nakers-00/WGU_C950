@@ -10,7 +10,7 @@ def read_csv(filename):
         return list(reader)
 
 
-# **In order to make the main.py file more readable, separate method aliases will be used for each csv file**
+# In order to make the main.py file more readable, separate method aliases will be used for each csv file
 
 # Reads package information from package.csv file
 read_package_csv = read_csv
@@ -30,11 +30,3 @@ def time_converter(time):
 
     converted_time = timedelta(hours=int(h), minutes=int(m))
     return converted_time
-
-# Basic idea for how to make package objects, need to use a loop and add them to the hash table in real implementation
-
-# packageData = read_package_csv('package.csv')
-#
-# test_package = Package(packageData[2][0], packageData[2][1], packageData[2][2], packageData[2][3],
-#                        packageData[2][4], packageData[2][5], packageData[2][6], packageData[2][7])
-# print(test_package)
